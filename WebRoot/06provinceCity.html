@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>省市二级联动：返回的是XML</title>
+	
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="this is my page">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+	<script type="text/javascript" src="util.js"></script>
+	<script type="text/javascript">
+		/*
+		<provinces>
+		  <province name="北京" description="首都">
+		    <city name="海淀区" description="没啥可描述的"/>
+		    <city name="朝阳区" description="没啥可描述的"/>
+		    <city name="昌平区" description="没啥可描述的"/>
+		  </province>
+		  <province name="山东" description="SD省份">
+		    <city name="济南市" description="泉城省会"/>
+		    <city name="青岛市" description="没啥可描述的"/>
+		    <city name="淄博市" description="没啥可描述的"/>
+		  </province>
+		  <province name="湖北" description="九头鸟省份">
+		    <city name="武汉市" description="省会"/>
+		    <city name="荆州市" description="没啥可描述的"/>
+		    <city name="襄阳市" description="没啥可描述的"/>
+		  </province>
+		</provinces>
+		*/
+		var doc;
+		window.onload=function(){
+			var xhr = getXmlHttpRequest();
+			xhr.onreadystatechange=function(){
+				if(xhr.readyState==4){
+					if(xhr.status==200){
+						//显示省份下拉列表
+						doc = xhr.responseXML;//返回Document对象
+						//解析XML，初始化省份列表
+							var xmlProvinces = doc.getElementsByTagName("province");
+							//得到xml中的所有province元素的name属性
+							for(var i=0;i<xmlProvinces.length;i++){
+								var provinceName = xmlProvinces[i].getAttribute("name");
+								//遍历：HTML DOM给id为province添加option子元素
+								var htmlOption = new Option(provinceName,provinceName);
+								document.getElementById("province").add(htmlOption);
+							}
+							
+					}
+				}
+			}
+			xhr.open("GET","/day21_00_ajax/servlet/ServletDemo6?time="+new Date().getTime());
+			xhr.send(null);
+		}
+		function selectCity(provinceObj){
+			
+			document.getElementById("city").length=1;
+			var selectedProvinceName = provinceObj.value;//用户选择的省份
+			var xmlProvinces = doc.getElementsByTagName("province");
+			for(var i=0;i<xmlProvinces.length;i++){
+				var provinceName = xmlProvinces[i].getAttribute("name");
+				if(selectedProvinceName==provinceName){
+					//找他的所有城市的name
+					var xmlCitys = xmlProvinces[i].getElementsByTagName("city");
+					for(var j=0;j<xmlCitys.length;j++){
+						var htmlOption = new Option(xmlCitys[j].getAttribute("name"),xmlCitys[j].getAttribute("name"));
+						document.getElementById("city").add(htmlOption);
+					}
+				}
+			}
+		}
+	</script>
+  </head>
+  
+  <body>
+    <select id="province" name="province" onchange="selectCity(this)"></select>
+    <select id="city" name="city">
+    	<option value="">请选择</option>
+    </select>
+  </body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>检测用户名是否可用</title>
+	
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="this is my page">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    
+    <!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+    <script type="text/javascript" src="util.js"></script>
+	<script type="text/javascript">
+		window.onload=function(){
+			document.getElementById("name").onblur=function(){
+				//发异步请求
+				var xhr = getXmlHttpRequest();
+				xhr.onreadystatechange=function(){
+					if(xhr.readyState==4){
+						if(xhr.status==200){
+							//获取响应正文
+							document.getElementById("msg").innerHTML=xhr.responseText;
+						}
+					}
+				}
+				//get异步请求
+				//xhr.open("GET","/day21_00_ajax/servlet/ServletDemo2?time="+new Date().getTime()+"&name="+this.value);
+				//xhr.send(null);
+				
+				//post异步请求
+				xhr.open("POST","/day21_00_ajax/servlet/ServletDemo2?time="+new Date().getTime());
+				xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xhr.send("name="+this.value);
+			}
+		}
+	</script>
+  </head>
+  
+  <body>
+    用户名：<input type="text" id="name" name="name"/><span id="msg"></span>
+  </body>
+</html>
