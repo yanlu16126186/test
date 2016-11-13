@@ -3,6 +3,7 @@ package com.itheima.domain;
 public class Person {
 	private String name;
 	private String gender;
+        private String haha;
 	
 	public Person(){}
 	
